@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f1923">
+<meta name="description" content="SocioLens — AI-powered Sociology companion. Analyze global social issues through sociological theories.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SocioLens">
+<link rel="manifest" href="manifest.json">
+<title>SocioLens — AI × Sociology</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f1923; --surface:#162030; --surface2:#1e2d40; --border:#2a3f57;
+  --accent:#00c9a7; --accent2:#ff6b6b; --accent3:#ffd93d;
+  --text:#e8f0f7; --text2:#8ba3bc; --text3:#4a6580;
+  --font:'Sora',sans-serif; --font-urdu:'Noto Nastaliq Urdu',serif;
+  --font-mono:'JetBrains Mono',monospace; --radius:16px; --radius-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(0,201,167,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(255,107,107,0.05) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity 0.6s ease}
+#splash.hide{opacity:0;pointer-events:none}
+.splash-logo{width:90px;height:90px;background:linear-gradient(135deg,var(--accent),#0099a0);border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:42px;box-shadow:0 0 40px rgba(0,201,167,0.3);animation:splash-pulse 1.5s ease-in-out infinite}
+@keyframes splash-pulse{0%,100%{box-shadow:0 0 40px rgba(0,201,167,0.3)}50%{box-shadow:0 0 70px rgba(0,201,167,0.6)}}
+.splash-title{font-size:32px;font-weight:700;letter-spacing:-1px}
+.splash-title span{color:var(--accent)}
+.splash-sub{color:var(--text2);font-size:14px}
+.splash-sub-urdu{font-family:var(--font-urdu);font-size:16px;color:var(--accent3);direction:rtl}
+.splash-bar{width:200px;height:3px;background:var(--surface2);border-radius:10px;overflow:hidden;margin-top:10px}
+.splash-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:10px;animation:splash-load 2s ease forwards}
+@keyframes splash-load{to{width:100%}}
+
+/* APP SHELL */
+#app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;position:sticky;top:0;z-index:100;background:rgba(15,25,35,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#0099a0);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-weight:700;font-size:18px;letter-spacing:-0.5px}
+.logo-text span{color:var(--accent)}
+.lang-toggle{display:flex;gap:4px;background:var(--surface2);border-radius:8px;padding:3px}
+.lang-btn{background:none;border:none;color:var(--text2);font-family:var(--font);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all 0.2s}
+.lang-btn.active{background:var(--accent);color:var(--bg)}
+
+/* NAV TABS */
+.nav-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{flex:1;min-width:70px;background:none;border:none;color:var(--text3);font-family:var(--font);font-size:11px;font-weight:600;padding:12px 8px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap}
+.nav-tab .tab-icon{font-size:18px}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* SCREENS */
+.screen{display:none;padding:16px}
+.screen.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.hero-card{background:linear-gradient(135deg,#162b40,#1a3350);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;position:relative;overflow:hidden}
+.hero-card::after{content:'??';position:absolute;right:-10px;bottom:-15px;font-size:80px;opacity:0.08}
+.hero-card h2{font-size:22px;font-weight:700;line-height:1.3;margin-bottom:6px}
+.hero-card h2 span{color:var(--accent)}
+.hero-card p{color:var(--text2);font-size:13px;line-height:1.6}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center}
+.stat-num{font-size:22px;font-weight:700;color:var(--accent);font-family:var(--font-mono)}
+.stat-label{font-size:10px;color:var(--text2);margin-top:3px}
+.section-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;padding-left:4px}
+.issues-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.issue-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 12px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.issue-card:hover,.issue-card:active{border-color:var(--accent);background:var(--surface2);transform:translateY(-2px)}
+.issue-emoji{font-size:26px;margin-bottom:8px}
+.issue-name{font-size:12px;font-weight:600;line-height:1.4}
+.issue-tag{display:inline-block;margin-top:6px;background:rgba(0,201,167,0.12);color:var(--accent);font-size:9px;font-weight:600;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px}
+
+/* ANALYZE */
+.analyze-form{display:flex;flex-direction:column;gap:14px}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:6px;display:block}
+.form-textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:14px;padding:14px 16px;outline:none;transition:border-color 0.2s;resize:vertical;min-height:90px;line-height:1.6}
+.form-textarea:focus{border-color:var(--accent)}
+.theory-chips{display:flex;flex-wrap:wrap;gap:7px}
+.theory-chip{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;cursor:pointer;transition:all 0.2s}
+.theory-chip.active{background:rgba(0,201,167,0.15);border-color:var(--accent);color:var(--accent)}
+.lang-chips{display:flex;gap:8px;margin-bottom:4px}
+.lang-chip{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600;padding:7px 16px;border-radius:20px;cursor:pointer;transition:all 0.2s}
+.lang-chip.active{background:rgba(255,217,61,0.15);border-color:var(--accent3);color:var(--accent3)}
+.analyze-btn{background:linear-gradient(135deg,var(--accent),#0099a0);border:none;border-radius:var(--radius-sm);color:var(--bg);font-family:var(--font);font-size:15px;font-weight:700;padding:16px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.analyze-btn:disabled{opacity:0.5;cursor:not-allowed}
+.analyze-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,201,167,0.3)}
+.loading-overlay{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px 20px;text-align:center;margin-top:16px}
+.loading-overlay.active{display:block;animation:fadeIn 0.3s ease}
+.loading-spinner{width:50px;height:50px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 16px;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text2);font-size:13px}
+.loading-text span{color:var(--accent);font-family:var(--font-mono)}
+.result-container{display:none;margin-top:16px}
+.result-container.active{display:block;animation:fadeIn 0.4s ease}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.result-card-header{background:var(--surface2);padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.result-card-header .r-icon{font-size:18px}
+.result-card-header .r-title{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:0.5px;text-transform:uppercase}
+.result-card-body{padding:16px;font-size:14px;line-height:1.8;color:var(--text2);white-space:pre-wrap}
+.result-card-body.urdu{font-family:var(--font-urdu);direction:rtl;font-size:16px;line-height:2.2;text-align:right}
+.interview-gold-card{background:linear-gradient(135deg,rgba(255,217,61,0.1),rgba(255,200,0,0.05));border:1px solid rgba(255,217,61,0.3);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+.igc-label{font-size:10px;font-weight:700;color:var(--accent3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.igc-text{font-size:14px;line-height:1.8;color:#e8dfc0;font-style:italic}
+.igc-text.urdu{font-family:var(--font-urdu);direction:rtl;font-size:17px;line-height:2.2;text-align:right}
+
+/* ISSUES */
+.issues-list{display:flex;flex-direction:column;gap:10px}
+.big-issue-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.2s;display:flex;gap:14px;align-items:flex-start}
+.big-issue-card:hover{border-color:var(--accent);background:var(--surface2)}
+.bic-emoji{font-size:32px;flex-shrink:0}
+.bic-content{flex:1}
+.bic-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.bic-title-urdu{font-family:var(--font-urdu);direction:rtl;font-size:15px;color:var(--accent3);display:none}
+.bic-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.bic-desc-urdu{font-family:var(--font-urdu);direction:rtl;font-size:13px;color:var(--text3);display:none}
+.bic-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.bic-chip{font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px}
+.chip-red{background:rgba(255,107,107,0.15);color:var(--accent2)}
+.chip-green{background:rgba(0,201,167,0.12);color:var(--accent)}
+.chip-yellow{background:rgba(255,217,61,0.12);color:var(--accent3)}
+.analyze-this-btn{margin-top:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--accent);font-size:11px;font-weight:700;padding:7px 12px;cursor:pointer;font-family:var(--font);transition:all 0.2s}
+.analyze-this-btn:hover{background:var(--accent);color:var(--bg)}
+
+/* LEARN */
+.theory-learn-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.tlc-header{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.tlc-color{width:4px;height:40px;border-radius:2px;flex-shrink:0}
+.tlc-name{font-size:15px;font-weight:700}
+.tlc-thinker{font-size:11px;color:var(--text2);margin-top:2px}
+.tlc-arrow{margin-left:auto;color:var(--text3);transition:transform 0.3s}
+.tlc-header.open .tlc-arrow{transform:rotate(180deg)}
+.tlc-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+.tlc-body.open{display:block;animation:fadeIn 0.2s ease}
+.tlc-desc{font-size:13px;color:var(--text2);line-height:1.8;margin-top:12px}
+.tlc-desc-urdu{font-family:var(--font-urdu);direction:rtl;font-size:15px;color:var(--text3);margin-top:10px;display:none;text-align:right}
+.tlc-example{margin-top:10px;background:var(--surface2);border-radius:8px;padding:10px 12px}
+.tlc-example-label{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.tlc-example-text{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* ABOUT */
+.about-hero{background:linear-gradient(135deg,#162b40,#1a3350);border:1px solid var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;margin-bottom:16px}
+.about-app-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--accent),#0099a0);border-radius:20px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 0 30px rgba(0,201,167,0.3)}
+.about-app-name{font-size:26px;font-weight:700;letter-spacing:-0.5px}
+.about-app-name span{color:var(--accent)}
+.about-version{font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-top:4px}
+.about-tagline{color:var(--text2);font-size:13px;margin-top:10px;line-height:1.7}
+.about-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+.about-card h3{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:10px}
+.about-card p,.about-card li{font-size:13px;color:var(--text2);line-height:1.8}
+.about-card ul{padding-left:16px}
+.about-card li{margin-bottom:4px}
+.creator-card{background:linear-gradient(135deg,rgba(255,217,61,0.08),rgba(255,200,0,0.03));border:1px solid rgba(255,217,61,0.25);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:12px}
+.creator-label{font-size:10px;color:var(--accent3);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.creator-name{font-size:18px;font-weight:700}
+.creator-title{font-size:12px;color:var(--text2);margin-top:3px}
+
+/* INSTALL BANNER */
+.install-banner{display:none;background:linear-gradient(135deg,rgba(0,201,167,0.15),rgba(0,153,160,0.1));border:1px solid rgba(0,201,167,0.3);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px;align-items:center;gap:12px}
+.install-banner.show{display:flex;animation:fadeIn 0.4s ease}
+.ib-text{flex:1;font-size:13px;line-height:1.5}
+.ib-text strong{color:var(--accent)}
+.ib-btn{background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer;font-family:var(--font);white-space:nowrap}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-logo">??</div>
+  <div class="splash-title">Socio<span>Lens</span></div>
+  <div class="splash-sub">AI × Sociology — Global Issues</div>
+  <div class="splash-sub-urdu">????? ????? — ??????? ??? ?????? ?????</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="logo-icon">??</div>
+      <div class="logo-text">Socio<span>Lens</span></div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-ur" onclick="setLang('ur')">????</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showScreen('home',this)">
+      <span class="tab-icon">??</span><span class="tab-en">Home</span><span class="tab-ur" style="display:none;font-family:var(--font-urdu)">???</span>
+    </button>
+    <button class="nav-tab" onclick="showScreen('analyze',this)">
+      <span class="tab-icon">??</span><span class="tab-en">Analyze</span><span class="tab-ur" style="display:none;font-family:var(--font-urdu)">?????</span>
+    </button>
+    <button class="nav-tab" onclick="showScreen('issues',this)">
+      <span class="tab-icon">??</span><span class="tab-en">Issues</span><span class="tab-ur" style="display:none;font-family:var(--font-urdu)">?????</span>
+    </button>
+    <button class="nav-tab" onclick="showScreen('learn',this)">
+      <span class="tab-icon">??</span><span class="tab-en">Learn</span><span class="tab-ur" style="display:none;font-family:var(--font-urdu)">??????</span>
+    </button>
+    <button class="nav-tab" onclick="showScreen('about',this)">
+      <span class="tab-icon">??</span><span class="tab-en">About</span><span class="tab-ur" style="display:none;font-family:var(--font-urdu)">???? ???</span>
+    </button>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div id="install-banner" class="install-banner">
+      <span style="font-size:24px">??</span>
+      <div class="ib-text"><strong>Install SocioLens</strong><br>Add to home screen for app experience</div>
+      <button class="ib-btn" id="install-btn">Install</button>
+    </div>
+    <div class="hero-card">
+      <h2 class="lang-en">Understand the World Through <span>Sociology + AI</span></h2>
+      <h2 class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">??????? ??? <span>?????? ?????</span> ?? ???? ??????</h2>
+      <p class="lang-en">Analyze global social phenomena using classical theories and AI. Free for everyone.</p>
+      <p class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl;font-size:14px">AI ??? ??????? ?????? ?? ????? ????? ?? ????? ????? ?? ?? ??? ????</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">12</div><div class="stat-label lang-en">Global Issues</div><div class="stat-label lang-ur" style="display:none;font-family:var(--font-urdu)">????? ?????</div></div>
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label lang-en">Theories</div><div class="stat-label lang-ur" style="display:none;font-family:var(--font-urdu)">??????</div></div>
+      <div class="stat-card"><div class="stat-num">AI</div><div class="stat-label lang-en">Powered</div><div class="stat-label lang-ur" style="display:none;font-family:var(--font-urdu)">????</div></div>
+    </div>
+    <div class="section-title lang-en">?? Tap Any Issue to Analyze with AI</div>
+    <div class="section-title lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">?? ????? ?? ??? ???? ????? ??????</div>
+    <div class="issues-grid">
+      <div class="issue-card" onclick="quickAnalyze('Climate Change and social inequality')"><div class="issue-emoji">???</div><div class="issue-name lang-en">Climate Change</div><div class="issue-name lang-ur" style="display:none;font-family:var(--font-urdu)">???????? ??????</div><div class="issue-tag">Global</div></div>
+      <div class="issue-card" onclick="quickAnalyze('AI and job displacement in modern economy')"><div class="issue-emoji">??</div><div class="issue-name lang-en">AI & Jobs</div><div class="issue-name lang-ur" style="display:none;font-family:var(--font-urdu)">?????? ??? AI</div><div class="issue-tag">Tech</div></div>
+      <div class="issue-card" onclick="quickAnalyze('Gender inequality in education and workforce')"><div class="issue-emoji">??</div><div class="issue-name lang-en">Gender Equality</div><div class="issue-name lang-ur" style="display:none;font-family:var(--font-urdu)">?? ??????</div><div class="issue-tag">Rights</div></div>
+      <div class="issue-card" onclick="quickAnalyze('Digital divide and social exclusion in developing countries')"><div class="issue-emoji">??</div><div class="issue-name lang-en">Digital Divide</div><div class="issue-name lang-ur" style="display:none;font-family:var(--font-urdu)">?????? ????</div><div class="issue-tag">Inequality</div></div>
+      <div class="issue-card" onclick="quickAnalyze('Mental health crisis among youth globally')"><div class="issue-emoji">??</div><div class="issue-name lang-en">Mental Health</div><div class="issue-name lang-ur" style="display:none;font-family:var(--font-urdu)">???? ???</div><div class="issue-tag">Wellbeing</div></div>
+      <div class="issue-card" onclick="quickAnalyze('Migration and refugee crisis social impact')"><div class="issue-emoji">??</div><div class="issue-name lang-en">Migration</div><div class="issue-name lang-ur" style="display:none;font-family:var(--font-urdu)">??? ?????</div><div class="issue-tag">Global</div></div>
+    </div>
+  </div>
+
+  <!-- ANALYZE -->
+  <div class="screen" id="screen-analyze">
+    <div class="section-title lang-en" style="margin-bottom:14px">?? AI Sociology Analyzer</div>
+    <div class="section-title lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl;margin-bottom:14px">?? ?????? ????? ????? ???</div>
+    <div class="analyze-form">
+      <div>
+        <label class="form-label lang-en">Enter Social Topic or Problem</label>
+        <label class="form-label lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">????? ????? ??? ????</label>
+        <textarea class="form-textarea" id="analyzeInput" placeholder="e.g. Poverty and education in developing countries..."></textarea>
+      </div>
+      <div>
+        <label class="form-label lang-en">Select Theories</label>
+        <label class="form-label lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">?????? ????? ????</label>
+        <div class="theory-chips">
+          <div class="theory-chip active" data-theory="Structural Functionalism">Functionalism</div>
+          <div class="theory-chip active" data-theory="Conflict Theory (Marx)">Conflict Theory</div>
+          <div class="theory-chip active" data-theory="Symbolic Interactionism">Interactionism</div>
+          <div class="theory-chip" data-theory="Feminist Theory">Feminist</div>
+          <div class="theory-chip" data-theory="Post-Colonial Theory">Post-Colonial</div>
+          <div class="theory-chip" data-theory="Social Capital (Bourdieu)">Social Capital</div>
+          <div class="theory-chip" data-theory="Anomie Theory (Durkheim)">Anomie</div>
+          <div class="theory-chip" data-theory="Network Theory">Network Theory</div>
+        </div>
+      </div>
+      <div>
+        <label class="form-label lang-en">Response Language</label>
+        <label class="form-label lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">???? ?? ????</label>
+        <div class="lang-chips">
+          <div class="lang-chip active" data-lang="English">???? English</div>
+          <div class="lang-chip" data-lang="Urdu" style="font-family:var(--font-urdu)">???? ????</div>
+          <div class="lang-chip" data-lang="Both">Both</div>
+        </div>
+      </div>
+      <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">
+        <span>??</span>
+        <span class="lang-en">Run AI Analysis</span>
+        <span class="lang-ur" style="display:none;font-family:var(--font-urdu)">????? ???? ????</span>
+      </button>
+    </div>
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">AI is analyzing... <span id="loadingStage">applying theories</span></div>
+    </div>
+    <div class="result-container" id="resultContainer">
+      <div class="result-card"><div class="result-card-header"><span class="r-icon">??</span><span class="r-title">Overview</span></div><div class="result-card-body" id="r-overview"></div></div>
+      <div class="result-card"><div class="result-card-header"><span class="r-icon">??</span><span class="r-title">Theoretical Analysis</span></div><div class="result-card-body" id="r-theories"></div></div>
+      <div class="result-card"><div class="result-card-header"><span class="r-icon">??</span><span class="r-title">AI Research Methods</span></div><div class="result-card-body" id="r-ai"></div></div>
+      <div class="result-card"><div class="result-card-header"><span class="r-icon">??</span><span class="r-title">Research Questions</span></div><div class="result-card-body" id="r-research"></div></div>
+      <div class="result-card"><div class="result-card-header"><span class="r-icon">???</span><span class="r-title">Policy Implications</span></div><div class="result-card-body" id="r-policy"></div></div>
+      <div class="interview-gold-card"><div class="igc-label">?? Interview Power Statement</div><div class="igc-text" id="r-interview"></div></div>
+    </div>
+  </div>
+
+  <!-- ISSUES -->
+  <div class="screen" id="screen-issues">
+    <div class="section-title lang-en" style="margin-bottom:14px">?? 12 Critical Global Issues</div>
+    <div class="section-title lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl;margin-bottom:14px">?? ?? ??? ????? ?????</div>
+    <div class="issues-list" id="issuesList"></div>
+  </div>
+
+  <!-- LEARN -->
+  <div class="screen" id="screen-learn">
+    <div class="section-title lang-en" style="margin-bottom:14px">?? 8 Major Sociological Theories</div>
+    <div class="section-title lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl;margin-bottom:14px">?? ? ??? ???????? ??????</div>
+    <div id="theoriesList"></div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="screen" id="screen-about">
+    <div class="about-hero">
+      <div class="about-app-icon">??</div>
+      <div class="about-app-name">Socio<span>Lens</span></div>
+      <div class="about-version">Version 1.0 • 2025</div>
+      <div class="about-tagline lang-en">AI-powered Sociology companion bridging classical theory and modern technology for researchers, students and educators worldwide.</div>
+      <div class="about-tagline lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">?????? ????? ?? ???? ???? ???????? ????? ?? ???? ??? ?? ?????? ??? ?????? ?? ??? ??????? ?????? ??? ???? ????????? ?? ????? ???</div>
+    </div>
+    <div class="creator-card">
+      <div class="creator-label">Created By</div>
+      <div class="creator-name">Sociology Researcher</div>
+      <div class="creator-title lang-en">Lecturer in Sociology • AI & Social Research Specialist</div>
+      <div class="creator-title lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">??????? ??????? • ?????? ????? ? ????? ????? ????</div>
+    </div>
+    <div class="about-card">
+      <h3>?? Features</h3>
+      <ul>
+        <li class="lang-en">AI analysis of any social topic using 8 classical theories</li>
+        <li class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">? ??????? ?????? ?? ??? ??? ????? ????? ?? AI ?????</li>
+        <li class="lang-en">12 critical global issues with sociological context</li>
+        <li class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">???????? ????? ?? ???? ?? ??? ????? ?????</li>
+        <li class="lang-en">Bilingual: English and Urdu</li>
+        <li class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">?? ?????: ??????? ??? ????</li>
+        <li class="lang-en">100% Free — No account needed</li>
+        <li class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">???? ??? — ???? ?????? ???? ?????</li>
+      </ul>
+    </div>
+    <div class="about-card">
+      <h3>?? Why AI + Sociology?</h3>
+      <p class="lang-en">AI tools like Natural Language Processing, sentiment analysis, and big data analytics are transforming sociological research. This app demonstrates that integration — making advanced social analysis accessible to everyone.</p>
+      <p class="lang-ur" style="display:none;font-family:var(--font-urdu);direction:rtl">?????? ????? ?? ????? ???? ????? ???? ???????? ??? ??? ???? ?? ????? ???????? ????? ?? ??? ??? ???? ?? ??? ?? ?????? ?? ???? ???? ???</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const GLOBAL_ISSUES = [
+  {emoji:'???',en:'Climate Change & Environmental Injustice',ur:'???????? ?????? ??? ????????? ????????',desc_en:'Rising temperatures disproportionately affect marginalized communities. A core issue of environmental sociology and social justice.',desc_ur:'???? ????? ??? ????? ????? ????? ?? ????? ????? ???? ???',tags:[{label:'URGENT',cls:'chip-red'},{label:'GLOBAL',cls:'chip-green'}],query:'Climate change environmental injustice and social inequality'},
+  {emoji:'??',en:'AI, Automation & Job Displacement',ur:'?????? ????? ??? ?????? ?? ?????',desc_en:'AI is reshaping labor markets globally, creating new forms of inequality and social stratification.',desc_ur:'AI ????? ???? ??????? ?? ??? ??? ?? ??? ?? ??? ??? ?????? ?? ??? ????? ???? ?? ??? ???',tags:[{label:'TECH',cls:'chip-yellow'},{label:'ECONOMY',cls:'chip-green'}],query:'AI automation job displacement social stratification inequality'},
+  {emoji:'??',en:'Gender Inequality & Patriarchy',ur:'???? ??? ?????? ??? ?????? ????',desc_en:'Despite progress, gender-based discrimination persists in education, work, and political participation worldwide.',desc_ur:'???? ?? ?????? ????? ??? ??? ??? ???? ?????? ???? ???',tags:[{label:'HUMAN RIGHTS',cls:'chip-red'},{label:'FEMINIST',cls:'chip-yellow'}],query:'Gender inequality patriarchy feminist sociology analysis'},
+  {emoji:'??',en:'Global Poverty & Economic Inequality',ur:'????? ???? ??? ????? ??? ??????',desc_en:'The wealth gap continues to widen. Structural factors and power dynamics perpetuate cycles of poverty.',desc_ur:'???? ??? ???? ?? ?????? ????? ??? ??? ???',tags:[{label:'CRITICAL',cls:'chip-red'},{label:'CONFLICT',cls:'chip-yellow'}],query:'Global poverty economic inequality structural factors social mobility'},
+  {emoji:'??',en:'Digital Divide & Social Exclusion',ur:'?????? ???? ??? ????? ?????',desc_en:'Unequal technology access creates new forms of social exclusion, particularly in developing nations.',desc_ur:'????????? ?? ??? ????? ????? ????? ????? ?? ??? ????? ???? ???? ???',tags:[{label:'INEQUALITY',cls:'chip-red'},{label:'TECH',cls:'chip-yellow'}],query:'Digital divide social exclusion developing countries technology inequality'},
+  {emoji:'??',en:'Mental Health Crisis Among Youth',ur:'???????? ??? ???? ??? ?? ?????',desc_en:'A global epidemic of anxiety and depression amplified by social media and economic pressure on young people.',desc_ur:'??????? ??? ?????? ?? ????? ???? ??? ???? ????? ?? ?????? ???',tags:[{label:'HEALTH',cls:'chip-green'},{label:'YOUTH',cls:'chip-yellow'}],query:'Youth mental health crisis social media isolation sociology'},
+  {emoji:'??',en:'Migration, Refugees & Xenophobia',ur:'??? ?????? ???? ???? ??? ??? ?????',desc_en:'Forced migration due to conflict and climate creates profound sociological challenges around identity and integration.',desc_ur:'??????? ?? ??? ?? ???? ??? ????? ????? ??? ?????? ?? ?????? ???? ???? ???',tags:[{label:'GLOBAL',cls:'chip-green'},{label:'IDENTITY',cls:'chip-yellow'}],query:'Migration refugees xenophobia social integration identity'},
+  {emoji:'??',en:'Education Inequality & Access',ur:'?????? ??? ??????',desc_en:'Quality education remains a privilege. Socioeconomic factors determine educational outcomes and reproduce social class.',desc_ur:'?????? ????? ??? ?????? ??? ????? ??????? ????? ?????? ????? ?? ???? ???? ????',tags:[{label:'EDUCATION',cls:'chip-green'},{label:'CLASS',cls:'chip-yellow'}],query:'Education inequality access social class reproduction Bourdieu'},
+  {emoji:'???',en:'Urbanization & Housing Crisis',ur:'???? ???? ??? ?????? ?? ?????',desc_en:'Rapid urbanization creates slums and displacement while wealth concentrates in city centers.',desc_ur:'??? ????? ???? ???? ??? ??????? ??? ?? ???? ???? ???? ???',tags:[{label:'URBAN',cls:'chip-yellow'},{label:'HOUSING',cls:'chip-green'}],query:'Urbanization housing crisis homelessness social stratification'},
+  {emoji:'??',en:'Racism & Structural Discrimination',ur:'??? ????? ??? ?????? ???? ??????',desc_en:'Structural racism embedded in institutions creates systemic disadvantages for racial and ethnic minorities.',desc_ur:'?????? ??? ????? ?? ???? ??? ????? ???? ??????? ?? ??? ??????? ???? ???? ???',tags:[{label:'RACISM',cls:'chip-red'},{label:'JUSTICE',cls:'chip-green'}],query:'Structural racism ethnic discrimination institutional bias sociology'},
+  {emoji:'??',en:'Aging Population & Social Care',ur:'???? ????? ??? ????? ???????',desc_en:'Rapidly aging societies face challenges in healthcare, pensions, and intergenerational relationships.',desc_ur:'???? ?? ????? ???? ????? ??? ??? ???? ??? ?????? ?? ????? ???? ???',tags:[{label:'AGING',cls:'chip-yellow'},{label:'CARE',cls:'chip-green'}],query:'Aging population social care intergenerational sociology'},
+  {emoji:'???',en:'Conflict, War & Social Trauma',ur:'???????? ??? ??? ????? ????',desc_en:'Armed conflicts destroy social fabric, create intergenerational trauma, and produce massive displacement.',desc_ur:'???? ??????? ????? ???? ???? ?? ???? ???? ??? ???? ???? ???? ???? ????',tags:[{label:'CONFLICT',cls:'chip-red'},{label:'TRAUMA',cls:'chip-yellow'}],query:'Armed conflict social trauma displacement war sociology'}
+];
+
+const THEORIES = [
+  {color:'#00c9a7',name:'Structural Functionalism',thinker:'Talcott Parsons, Émile Durkheim',desc_en:'Society is a complex system whose parts work together to promote stability. Each institution has a function maintaining equilibrium — like organs in a human body.',desc_ur:'?????? ??? ?????? ???? ?? ?? ?? ??? ??????? ?????? ????? ???? ?? ????? ?? ??? ??? ?? ???? ?????? ??? ?? ??????',ex_en:'Schools socialize children and prepare workers, maintaining cultural values and social order.',ex_ur:'????? ???? ?? ????? ????? ??? ?????? ????? ?? ?????? ????? ????'},
+  {color:'#ff6b6b',name:'Conflict Theory',thinker:'Karl Marx, Max Weber',desc_en:'Society is characterized by pervasive inequality and competition. The dominant class maintains control through ideological and structural means, exploiting the working class.',desc_ur:'?????? ???? ??? ?????? ??? ??????? ?? ?????? ??? ???? ???? ???? ?? ???? ?? ??????? ???? ???',ex_en:'The wealthy shape laws and media to maintain their advantage over the working class.',ex_ur:'????? ???? ???? ?? ?????? ??? ????? ?? ???? ???? ??? ?????? ????'},
+  {color:'#ffd93d',name:'Symbolic Interactionism',thinker:'George Herbert Mead, Erving Goffman',desc_en:'Society is constructed through everyday interactions and shared symbols. People act based on the meanings things have for them. Reality is socially constructed.',desc_ur:'?????? ?????? ?? ??? ??? ??? ?????? ?????? ?? ???? ??? ????? ????? ??? ?? ????? ???? ???',ex_en:'The meaning of "success" differs between social classes — shaping different life goals and behaviors.',ex_ur:'"???????" ?? ???? ????? ????? ?? ??? ????? ?? — ????? ????? ?? ????? ???? ???? ???'},
+  {color:'#a29bfe',name:'Feminist Theory',thinker:'Simone de Beauvoir, Patricia Hill Collins',desc_en:'Examines structures that produce gender inequality. Critiques patriarchy and advocates for gender justice. Intersectionality recognizes overlapping forms of discrimination.',desc_ur:'?? ??????? ?? ????? ???? ?? ?? ???? ??? ?????? ???? ???? ???? ?????? ???? ?? ????? ???? ???',ex_en:'Women earn less than men for the same work — reflecting deep patriarchal structures in economic institutions.',ex_ur:'?????? ??? ?? ??? ?? ??? ????? ?? ?? ????? ??? — ??????? ?????? ??? ?????? ??????? ?? ??????'},
+  {color:'#fd79a8',name:'Post-Colonial Theory',thinker:'Edward Said, Frantz Fanon',desc_en:'Analyzes the lasting impacts of colonialism on societies and knowledge systems. Questions Western-centric perspectives and amplifies marginalized voices.',desc_ur:'??????? ?? ????????? ?? ????? ????? ?? ????? ???? ??? ????? ????? ???? ??? ?? ???? ???? ???',ex_en:'Former colonies still struggle with economic dependency shaped by centuries of colonial rule.',ex_ur:'???? ????????? ?????????? ??????? ?? ????? ???? ??????? ?????? ?? ?????? ???? ????'},
+  {color:'#00b894',name:'Social Capital Theory',thinker:'Pierre Bourdieu, Robert Putnam',desc_en:'Networks of relationships enable society to function. Social capital — trust, norms, networks — is as important as economic capital for individual and collective outcomes.',desc_ur:'?????? ?? ??? ??? ?????? ?? ??? ???? ?? ???? ????? ???? ????? ?????? ??????? ?????? ???? ??? ???',ex_en:'Students with educated parents have better outcomes due to higher cultural and social capital.',ex_ur:'????? ????? ?????? ?? ??? ????? ????? ?????? ?? ??? ?? ???? ????? ????? ????'},
+  {color:'#e17055',name:'Anomie Theory',thinker:'Émile Durkheim, Robert Merton',desc_en:'Social disorder results from breakdown in norms. Strain between cultural goals and legitimate means to achieve them leads to deviance, crime, and social instability.',desc_ur:'????? ?????? ?????? ?? ????? ?? ???? ???? ??? ????? ??? ???? ????? ?? ?????? ???? ????? ?? ??? ?? ???? ???',ex_en:'When society promotes wealth but blocks legitimate paths to it, crime rates rise — as Merton predicted.',ex_ur:'?? ?????? ???? ?? ???? ???? ???? ???? ????? ??? ???? ?? ?? ????? ????? ????'},
+  {color:'#74b9ff',name:'Network Theory',thinker:'Mark Granovetter, Manuel Castells',desc_en:'Social structures are networks of relationships. Weak ties, information flow, and network position determine social outcomes. Modern societies are networked societies.',desc_ur:'????? ?????? ?????? ?? ??? ??? ???? ??? ??? ?? ?????? ????? ????? ?? ???? ???? ???',ex_en:'Jobs are often found through weak ties — distant acquaintances who provide information unavailable in close circles.',ex_ur:'???????? ???? ????? ????? ?? ????? ???? ??? ?? ??? ??????? ????? ???? ????'}
+];
+
+let currentLang = 'en';
+let selectedResponseLang = 'English';
+let deferredPrompt = null;
+
+// SPLASH
+setTimeout(() => {
+  document.getElementById('splash').classList.add('hide');
+  document.getElementById('app').style.display = 'block';
+  setTimeout(() => document.getElementById('splash').style.display='none', 700);
+  renderIssues(); renderTheories();
+}, 2200);
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  document.getElementById('btn-ur').classList.toggle('active', lang==='ur');
+  document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang==='en'?'':'none');
+  document.querySelectorAll('.lang-ur').forEach(el => el.style.display = lang==='ur'?'':'none');
+  document.querySelectorAll('.tab-en').forEach(el => el.style.display = lang==='en'?'':'none');
+  document.querySelectorAll('.tab-ur').forEach(el => el.style.display = lang==='ur'?'':'none');
+  document.querySelectorAll('.bic-title-urdu,.bic-desc-urdu,.tlc-desc-urdu').forEach(el => el.style.display = lang==='ur'?'block':'none');
+  const ta = document.getElementById('analyzeInput');
+  if(lang==='ur'){ta.placeholder='????: ??????? ??? ???? ??? ?????...';ta.style.fontFamily='var(--font-urdu)';ta.style.direction='rtl';}
+  else{ta.placeholder='e.g. Poverty and education gap in developing countries...';ta.style.fontFamily='var(--font)';ta.style.direction='ltr';}
+}
+
+function showScreen(name, tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if(tab) tab.classList.add('active');
+}
+
+document.querySelectorAll('.theory-chip[data-theory]').forEach(c => c.addEventListener('click', () => c.classList.toggle('active')));
+document.querySelectorAll('.lang-chip[data-lang]').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('.lang-chip').forEach(x => x.classList.remove('active'));
+  c.classList.add('active'); selectedResponseLang = c.dataset.lang;
+}));
+
+function renderIssues() {
+  document.getElementById('issuesList').innerHTML = GLOBAL_ISSUES.map(i => `
+    <div class="big-issue-card">
+      <div class="bic-emoji">${i.emoji}</div>
+      <div class="bic-content">
+        <div class="bic-title">${i.en}</div>
+        <div class="bic-title-urdu" style="${currentLang==='ur'?'':'display:none'}">${i.ur}</div>
+        <div class="bic-desc">${i.desc_en}</div>
+        <div class="bic-desc-urdu" style="${currentLang==='ur'?'':'display:none'}">${i.desc_ur}</div>
+        <div class="bic-chips">${i.tags.map(t=>`<span class="bic-chip ${t.cls}">${t.label}</span>`).join('')}</div>
+        <button class="analyze-this-btn" onclick="quickAnalyze('${i.query}')">?? Analyze with AI ?</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderTheories() {
+  document.getElementById('theoriesList').innerHTML = THEORIES.map((t,i) => `
+    <div class="theory-learn-card">
+      <div class="tlc-header" onclick="toggleT(${i},this)">
+        <div class="tlc-color" style="background:${t.color}"></div>
+        <div><div class="tlc-name">${t.name}</div><div class="tlc-thinker">${t.thinker}</div></div>
+        <div class="tlc-arrow">?</div>
+      </div>
+      <div class="tlc-body" id="tlc-${i}">
+        <div class="tlc-desc">${t.desc_en}</div>
+        <div class="tlc-desc-urdu" style="${currentLang==='ur'?'':'display:none'}">${t.desc_ur}</div>
+        <div class="tlc-example">
+          <div class="tlc-example-label">Example</div>
+          <div class="tlc-example-text">${t.ex_en}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleT(i, h) {
+  document.getElementById('tlc-'+i).classList.toggle('open');
+  h.classList.toggle('open');
+}
+
+function quickAnalyze(topic) {
+  document.getElementById('analyzeInput').value = topic;
+  showScreen('analyze', document.querySelectorAll('.nav-tab')[1]);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+const stages = ['applying theories...','cross-referencing...','generating insights...','formulating questions...','almost done...'];
+let si=0, stInt;
+
+async function runAnalysis() {
+  const topic = document.getElementById('analyzeInput').value.trim();
+  if(!topic){alert('Please enter a social topic.');return;}
+  const theories = Array.from(document.querySelectorAll('.theory-chip.active[data-theory]')).map(c=>c.dataset.theory);
+  if(!theories.length){alert('Select at least one theory.');return;}
+
+  document.getElementById('analyzeBtn').disabled=true;
+  document.getElementById('loadingOverlay').classList.add('active');
+  document.getElementById('resultContainer').classList.remove('active');
+
+  si=0; stInt=setInterval(()=>{document.getElementById('loadingStage').textContent=stages[si++%stages.length];},1500);
+
+  const isUrdu = selectedResponseLang==='Urdu';
+  const langInstr = isUrdu ? 'Respond ENTIRELY in Urdu script (not Roman Urdu). All JSON values must be in Urdu.' : selectedResponseLang.includes('Both') ? 'Provide English, then add Urdu translation after \\n\\n---\\n\\n' : 'Respond in English.';
+
+  const prompt = `You are an expert sociologist. Analyze this topic.
+TOPIC: "${topic}"
+THEORIES: ${theories.join(', ')}
+LANGUAGE: ${langInstr}
+
+Respond ONLY in valid JSON (no markdown, no backticks, no preamble):
+{"overview":"2-3 paragraph academic overview","theories":"Apply each theory to this topic. Format: THEORY NAME: analysis (one per line)","ai_methods":"3-4 specific AI/computational methods to study this (NLP, sentiment analysis, big data, ML, social network analysis, predictive modeling)","research_questions":"5 research questions + 2 methodology suggestions","policy":"3-4 concrete policy recommendations","interview_statement":"One impressive sentence for a Sociology Lecturer interview connecting this topic to AI and sociological theory"}`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    const data = await res.json();
+    const raw = data.content.map(i=>i.text||'').join('\n').replace(/```json|```/g,'').trim();
+    const p = JSON.parse(raw);
+    clearInterval(stInt);
+    document.getElementById('loadingOverlay').classList.remove('active');
+    document.getElementById('analyzeBtn').disabled=false;
+
+    const u = isUrdu;
+    ['overview','theories','ai_methods','research_questions','policy'].forEach((k,i) => {
+      const ids = ['r-overview','r-theories','r-ai','r-research','r-policy'];
+      const el = document.getElementById(ids[i]);
+      el.textContent = p[k];
+      el.className = 'result-card-body'+(u?' urdu':'');
+    });
+    document.getElementById('r-interview').textContent = '"'+p.interview_statement+'"';
+    document.getElementById('r-interview').className = 'igc-text'+(u?' urdu':'');
+    document.getElementById('resultContainer').classList.add('active');
+    document.getElementById('resultContainer').scrollIntoView({behavior:'smooth',block:'start'});
+  } catch(err) {
+    clearInterval(stInt);
+    document.getElementById('loadingOverlay').classList.remove('active');
+    document.getElementById('analyzeBtn').disabled=false;
+    alert('Error: '+err.message);
+  }
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt=e;
+  document.getElementById('install-banner').classList.add('show');
+});
+document.getElementById('install-btn').addEventListener('click', async () => {
+  if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('install-banner').classList.remove('show');}
+});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
