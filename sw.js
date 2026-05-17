@@ -2,7 +2,7 @@ const CACHE_NAME = 'sociolen-v1';
 const urlsToCache = [
   '/SOCIOLEN/',
   '/SOCIOLEN/index.html',
-  '/SOCIOLEN/manifest.json'
+  '/SOCIOLEN/manifest.json' 
 ];
 
 // Install
