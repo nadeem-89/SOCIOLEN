@@ -3,281 +3,546 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOCIOLEN – Global Sociology Platform</title>
-
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a4731">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SOCIOLEN">
-<meta name="description" content="SOCIOLEN - Global platform for sociologists, teachers and students worldwide">
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>SOCIOLEN – AI Sociology Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green-dark: #1a4731;
-    --green-mid: #2d7a4f;
-    --green-light: #3dba72;
-    --green-pale: #c8f0d8;
-    --green-soft: #eaf8f0;
+    --g1: #0d2b1a;
+    --g2: #1a4731;
+    --g3: #2d7a4f;
+    --g4: #3dba72;
+    --g5: #7ddba0;
+    --g6: #c8f0d8;
+    --g7: #eaf8f0;
     --white: #ffffff;
-    --text-dark: #0f2419;
-    --text-mid: #3a5c45;
-    --text-light: #6b9c7a;
+    --text: #0a1f12;
+    --muted: #5a7a65;
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--text-dark); overflow-x: hidden; }
 
-  nav {
-    position: fixed; top: 0; width: 100%; z-index: 100;
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--g1);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG EFFECT */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(61,186,114,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(26,71,49,0.3) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 100;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 1.2rem 5%;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--green-pale);
+    padding: 1rem 2rem;
+    background: rgba(13,43,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(61,186,114,0.15);
   }
-  .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--green-dark); letter-spacing: -1px; }
-  .logo span { color: var(--green-light); }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { text-decoration: none; color: var(--text-mid); font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
-  .nav-links a:hover { color: var(--green-light); }
-  .nav-cta { background: var(--green-dark); color: white; padding: 0.6rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; }
-  .nav-cta:hover { background: var(--green-light); transform: translateY(-2px); }
-
-  #install-banner {
-    display: none; position: fixed; bottom: 20px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--green-dark); color: white;
-    padding: 1rem 2rem; border-radius: 50px;
-    z-index: 999; gap: 1rem; align-items: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    font-size: 0.95rem; font-weight: 500;
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--white); letter-spacing: -0.5px;
   }
-  #install-banner.show { display: flex; }
-  #install-btn { background: var(--green-light); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 0.9rem; }
-  #dismiss-btn { background: transparent; color: rgba(255,255,255,0.6); border: none; cursor: pointer; font-size: 1.2rem; }
+  .logo span { color: var(--g4); }
+  .logo small {
+    display: block; font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem; font-weight: 400;
+    color: var(--g5); letter-spacing: 3px;
+    text-transform: uppercase; margin-top: -4px;
+  }
+  .header-badge {
+    background: rgba(61,186,114,0.15);
+    border: 1px solid rgba(61,186,114,0.3);
+    color: var(--g5); padding: 0.4rem 1rem;
+    border-radius: 50px; font-size: 0.75rem;
+    font-weight: 500; letter-spacing: 1px;
+  }
 
+  /* MAIN LAYOUT */
+  .app {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+  }
+
+  /* HERO */
   .hero {
-    min-height: 100vh; display: flex; align-items: center;
-    padding: 7rem 5% 4rem;
-    background: linear-gradient(135deg, var(--green-soft) 0%, #ffffff 60%, var(--green-pale) 100%);
-    position: relative; overflow: hidden;
+    text-align: center; padding: 3rem 0 2rem;
   }
-  .hero::before {
-    content: ''; position: absolute; top: -100px; right: -100px;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(61,186,114,0.15) 0%, transparent 70%);
-    border-radius: 50%; animation: pulse 4s ease-in-out infinite;
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700; line-height: 1.1;
+    margin-bottom: 1rem;
   }
-  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); opacity: 0.7; } }
+  .hero h1 em { color: var(--g4); font-style: italic; }
+  .hero p {
+    color: var(--g5); font-size: 1rem;
+    font-weight: 300; max-width: 500px;
+    margin: 0 auto 2rem; line-height: 1.7;
+  }
 
-  .hero-content { max-width: 650px; position: relative; z-index: 2; }
-  .hero-badge { display: inline-block; background: var(--green-pale); color: var(--green-dark); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeUp 0.8s ease forwards; }
-  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; color: var(--green-dark); margin-bottom: 1.2rem; animation: fadeUp 0.8s 0.2s ease both; }
-  .hero h1 em { color: var(--green-light); font-style: normal; }
-  .hero p { font-size: 1.15rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 2.5rem; font-weight: 300; animation: fadeUp 0.8s 0.4s ease both; }
-  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.8s 0.6s ease both; }
-  .btn-primary { background: var(--green-dark); color: white; padding: 0.9rem 2.2rem; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s; box-shadow: 0 8px 30px rgba(26,71,49,0.3); }
-  .btn-primary:hover { background: var(--green-light); transform: translateY(-3px); }
-  .btn-secondary { background: transparent; color: var(--green-dark); padding: 0.9rem 2.2rem; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem; border: 2px solid var(--green-dark); transition: all 0.3s; }
-  .btn-secondary:hover { background: var(--green-soft); transform: translateY(-3px); }
-  .hero-stats { display: flex; gap: 2.5rem; margin-top: 3.5rem; animation: fadeUp 0.8s 0.8s ease both; }
-  .stat { text-align: center; }
-  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--green-dark); }
-  .stat-label { font-size: 0.8rem; color: var(--text-light); font-weight: 500; }
-  .hero-visual { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 420px; height: 420px; display: flex; align-items: center; justify-content: center; }
-  .globe { width: 320px; height: 320px; border-radius: 50%; background: conic-gradient(from 0deg, var(--green-light), var(--green-dark), var(--green-mid), var(--green-light)); position: relative; animation: rotateSlow 15s linear infinite; box-shadow: 0 20px 60px rgba(26,71,49,0.3); }
-  .globe::before { content: '🌍'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 8rem; animation: rotateSlow 15s linear infinite reverse; }
-  @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  /* TOPIC CHIPS */
+  .topics {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    justify-content: center; margin-bottom: 2.5rem;
+  }
+  .chip {
+    background: rgba(61,186,114,0.1);
+    border: 1px solid rgba(61,186,114,0.25);
+    color: var(--g5); padding: 0.4rem 1rem;
+    border-radius: 50px; font-size: 0.8rem;
+    cursor: pointer; transition: all 0.2s;
+    font-weight: 400;
+  }
+  .chip:hover, .chip.active {
+    background: rgba(61,186,114,0.25);
+    border-color: var(--g4); color: var(--white);
+  }
 
-  .features { padding: 6rem 5%; background: var(--white); }
-  .section-header { text-align: center; margin-bottom: 4rem; }
-  .section-tag { display: inline-block; background: var(--green-pale); color: var(--green-dark); padding: 0.3rem 1rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; }
-  .section-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--green-dark); font-weight: 900; line-height: 1.2; }
-  .section-header p { color: var(--text-light); font-size: 1.05rem; margin-top: 0.8rem; font-weight: 300; }
-  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-  .feature-card { background: var(--green-soft); border-radius: 20px; padding: 2rem; border: 1px solid var(--green-pale); transition: all 0.3s; position: relative; overflow: hidden; }
-  .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--green-light); transform: scaleY(0); transform-origin: bottom; transition: transform 0.3s; }
-  .feature-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(26,71,49,0.15); }
-  .feature-card:hover::before { transform: scaleY(1); }
-  .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
-  .feature-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--green-dark); margin-bottom: 0.7rem; font-weight: 700; }
-  .feature-card p { color: var(--text-mid); font-size: 0.95rem; line-height: 1.6; font-weight: 300; }
+  /* CHAT AREA */
+  .chat-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(61,186,114,0.15);
+    border-radius: 20px; overflow: hidden;
+    margin-bottom: 1rem;
+  }
 
-  .for-who { padding: 6rem 5%; background: var(--green-dark); color: white; }
-  .for-who .section-tag { background: rgba(255,255,255,0.15); color: white; }
-  .for-who .section-header h2 { color: white; }
-  .for-who .section-header p { color: rgba(255,255,255,0.6); }
-  .who-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem; }
-  .who-card { background: rgba(255,255,255,0.07); border-radius: 20px; padding: 2.5rem; border: 1px solid rgba(255,255,255,0.1); text-align: center; transition: all 0.3s; }
-  .who-card:hover { background: rgba(255,255,255,0.12); transform: translateY(-5px); }
-  .who-emoji { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
-  .who-card h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--green-light); margin-bottom: 0.8rem; }
-  .who-card ul { list-style: none; text-align: left; }
-  .who-card ul li { color: rgba(255,255,255,0.75); font-size: 0.9rem; padding: 0.3rem 0; font-weight: 300; }
-  .who-card ul li::before { content: '✓ '; color: var(--green-light); font-weight: 700; }
+  .messages {
+    min-height: 300px; max-height: 500px;
+    overflow-y: auto; padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 1.2rem;
+    scroll-behavior: smooth;
+  }
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: rgba(61,186,114,0.3); border-radius: 2px; }
 
-  .how { padding: 6rem 5%; background: var(--green-soft); }
-  .steps { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; margin-top: 3rem; justify-content: center; }
-  .step { flex: 1; min-width: 200px; max-width: 260px; text-align: center; }
-  .step-num { width: 60px; height: 60px; background: var(--green-dark); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; margin: 0 auto 1rem; }
-  .step h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--green-dark); margin-bottom: 0.5rem; }
-  .step p { color: var(--text-mid); font-size: 0.9rem; font-weight: 300; line-height: 1.5; }
-  .step-arrow { font-size: 1.5rem; color: var(--green-light); align-self: center; margin-top: -2rem; }
+  /* WELCOME MESSAGE */
+  .welcome {
+    text-align: center; padding: 2rem 1rem;
+    color: var(--g5);
+  }
+  .welcome-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+  .welcome h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .welcome p { font-size: 0.9rem; line-height: 1.6; }
 
-  .cta-section { padding: 6rem 5%; background: linear-gradient(135deg, var(--green-mid), var(--green-dark)); text-align: center; color: white; }
-  .cta-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1rem; }
-  .cta-section p { font-size: 1.1rem; opacity: 0.8; margin-bottom: 2.5rem; font-weight: 300; }
-  .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-  .btn-white { background: white; color: var(--green-dark); padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s; }
-  .btn-white:hover { transform: translateY(-3px); }
-  .btn-outline-white { background: transparent; color: white; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1rem; border: 2px solid rgba(255,255,255,0.6); transition: all 0.3s; }
-  .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+  /* MESSAGE BUBBLES */
+  .msg {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    animation: msgIn 0.3s ease;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg.user { flex-direction: row-reverse; }
 
-  footer { background: var(--text-dark); color: rgba(255,255,255,0.6); padding: 3rem 5%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: white; }
-  .footer-logo span { color: var(--green-light); }
-  footer p { font-size: 0.85rem; }
-  .footer-links { display: flex; gap: 1.5rem; }
-  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
-  .footer-links a:hover { color: var(--green-light); }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0; font-weight: 600;
+  }
+  .avatar.ai {
+    background: linear-gradient(135deg, var(--g3), var(--g4));
+    color: white; font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+  }
+  .avatar.user {
+    background: rgba(61,186,114,0.2);
+    border: 1px solid rgba(61,186,114,0.4);
+    color: var(--g4); font-size: 0.85rem;
+  }
 
-  @media (max-width: 768px) {
-    .hero-visual { display: none; }
-    .nav-links { display: none; }
-    .hero-stats { gap: 1.5rem; }
-    footer { flex-direction: column; text-align: center; }
+  .bubble {
+    max-width: 78%; padding: 0.9rem 1.2rem;
+    border-radius: 16px; font-size: 0.92rem;
+    line-height: 1.7; font-weight: 300;
+  }
+  .msg.ai .bubble {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(61,186,114,0.15);
+    border-top-left-radius: 4px; color: rgba(255,255,255,0.9);
+  }
+  .msg.user .bubble {
+    background: linear-gradient(135deg, var(--g3), var(--g2));
+    border: 1px solid rgba(61,186,114,0.3);
+    border-top-right-radius: 4px; color: white;
+  }
+
+  .bubble strong { color: var(--g4); font-weight: 600; }
+  .bubble em { color: var(--g5); font-style: italic; }
+
+  /* TYPING INDICATOR */
+  .typing .bubble {
+    display: flex; gap: 5px; align-items: center;
+    padding: 1rem 1.2rem;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--g4); opacity: 0.4;
+    animation: bounce 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* INPUT AREA */
+  .input-area {
+    padding: 1rem 1.2rem;
+    border-top: 1px solid rgba(61,186,114,0.1);
+    display: flex; gap: 0.8rem; align-items: flex-end;
+    background: rgba(255,255,255,0.02);
+  }
+  textarea {
+    flex: 1; background: transparent; border: none;
+    color: white; font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; font-weight: 300;
+    resize: none; outline: none;
+    min-height: 24px; max-height: 120px;
+    line-height: 1.6;
+  }
+  textarea::placeholder { color: rgba(255,255,255,0.25); }
+
+  .send-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--g3), var(--g4));
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+    color: white; font-size: 1.1rem;
+  }
+  .send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 20px rgba(61,186,114,0.4); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* QUICK QUESTIONS */
+  .quick-section { margin-top: 1.5rem; }
+  .quick-label {
+    font-size: 0.75rem; color: var(--muted);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 0.8rem; font-weight: 500;
+  }
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.7rem;
+  }
+  .quick-btn {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(61,186,114,0.15);
+    border-radius: 12px; padding: 0.8rem 1rem;
+    color: rgba(255,255,255,0.7); font-size: 0.82rem;
+    cursor: pointer; transition: all 0.2s;
+    text-align: left; font-family: 'DM Sans', sans-serif;
+    font-weight: 300; line-height: 1.4;
+  }
+  .quick-btn:hover {
+    background: rgba(61,186,114,0.1);
+    border-color: rgba(61,186,114,0.35);
+    color: white; transform: translateY(-2px);
+  }
+  .quick-btn span { display: block; font-size: 1.1rem; margin-bottom: 0.3rem; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    margin-top: 2rem; padding: 1.2rem 1.5rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(61,186,114,0.1);
+    border-radius: 16px;
+  }
+  .stat-item {
+    flex: 1; min-width: 100px; text-align: center;
+  }
+  .stat-item .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 700; color: var(--g4);
+    line-height: 1;
+  }
+  .stat-item .lbl {
+    font-size: 0.72rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-top: 0.2rem;
+  }
+
+  /* ERROR */
+  .error-msg {
+    background: rgba(220,50,50,0.1);
+    border: 1px solid rgba(220,50,50,0.3);
+    border-radius: 12px; padding: 0.8rem 1rem;
+    color: #ff9999; font-size: 0.85rem;
+    margin: 0.5rem 1.2rem;
+  }
+
+  @media (max-width: 600px) {
+    .app { padding: 1rem 1rem 5rem; }
+    header { padding: 0.8rem 1rem; }
+    .quick-grid { grid-template-columns: 1fr 1fr; }
+    .hero h1 { font-size: 2rem; }
   }
 </style>
 </head>
 <body>
 
-<div id="install-banner">
-  📱 Install SOCIOLEN App
-  <button id="install-btn">Install</button>
-  <button id="dismiss-btn">✕</button>
+<header>
+  <div class="logo">
+    SOCIO<span>LEN</span>
+    <small>Global Sociology Platform</small>
+  </div>
+  <div class="header-badge">🤖 AI Powered</div>
+</header>
+
+<div class="app">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Ask Anything About<br><em>Sociology</em></h1>
+    <p>Get instant AI-powered answers, analysis, and insights on any sociology topic — for students, teachers, and researchers worldwide.</p>
+
+    <!-- TOPIC CHIPS -->
+    <div class="topics">
+      <div class="chip active" onclick="setTopic(this, '')">All Topics</div>
+      <div class="chip" onclick="setTopic(this, 'social stratification')">Social Stratification</div>
+      <div class="chip" onclick="setTopic(this, 'culture')">Culture & Society</div>
+      <div class="chip" onclick="setTopic(this, 'gender sociology')">Gender Studies</div>
+      <div class="chip" onclick="setTopic(this, 'deviance and crime')">Deviance & Crime</div>
+      <div class="chip" onclick="setTopic(this, 'socialization')">Socialization</div>
+      <div class="chip" onclick="setTopic(this, 'religion sociology')">Religion</div>
+      <div class="chip" onclick="setTopic(this, 'globalization')">Globalization</div>
+    </div>
+  </div>
+
+  <!-- CHAT BOX -->
+  <div class="chat-box">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <span class="welcome-icon">🌿</span>
+        <h3>Welcome to SOCIOLEN AI</h3>
+        <p>Ask me any sociology question — theories, concepts, research methods, social issues, or anything else. I'm here to help students, teachers, and sociologists worldwide.</p>
+      </div>
+    </div>
+
+    <div id="error-area"></div>
+
+    <div class="input-area">
+      <textarea
+        id="userInput"
+        placeholder="Ask a sociology question... (e.g. What is social stratification?)"
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
+        ➤
+      </button>
+    </div>
+  </div>
+
+  <!-- QUICK QUESTIONS -->
+  <div class="quick-section">
+    <div class="quick-label">✦ Try These Questions</div>
+    <div class="quick-grid">
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What is the difference between micro and macro sociology?">
+        <span>🔭</span>Micro vs Macro Sociology
+      </button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="Explain Emile Durkheim's theory of suicide and its sociological significance">
+        <span>📖</span>Durkheim's Suicide Theory
+      </button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="How does social media affect modern society sociologically?">
+        <span>📱</span>Social Media & Society
+      </button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What is gender inequality and how does sociology explain it?">
+        <span>⚖️</span>Gender Inequality
+      </button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="Explain Karl Marx's conflict theory in simple terms">
+        <span>⚡</span>Marx's Conflict Theory
+      </button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What are the main research methods used in sociology?">
+        <span>🔬</span>Research Methods
+      </button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="num">50K+</div><div class="lbl">Global Users</div></div>
+    <div class="stat-item"><div class="num">120+</div><div class="lbl">Countries</div></div>
+    <div class="stat-item"><div class="num">500+</div><div class="lbl">Topics Covered</div></div>
+    <div class="stat-item"><div class="num">24/7</div><div class="lbl">AI Available</div></div>
+  </div>
+
 </div>
 
-<nav>
-  <div class="logo">SOCIO<span>LEN</span></div>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#who">Who It's For</a></li>
-    <li><a href="#how">How It Works</a></li>
-  </ul>
-  <a href="#cta" class="nav-cta">Join Now</a>
-</nav>
-
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">🌿 Global Sociology Community</div>
-    <h1>Connect. Learn.<br><em>Shape Society.</em></h1>
-    <p>SOCIOLEN is the world's first dedicated platform for sociologists, teachers, and students to collaborate, share research, and explore the science of society — together.</p>
-    <div class="hero-buttons">
-      <a href="#cta" class="btn-primary">Get Started Free</a>
-      <a href="#features" class="btn-secondary">Explore Features</a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Members</div></div>
-      <div class="stat"><div class="stat-num">120+</div><div class="stat-label">Countries</div></div>
-      <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Resources</div></div>
-    </div>
-  </div>
-  <div class="hero-visual"><div class="globe"></div></div>
-</section>
-
-<section class="features" id="features">
-  <div class="section-header">
-    <div class="section-tag">✦ Platform Features</div>
-    <h2>Everything Sociology<br>Needs in One Place</h2>
-    <p>Built specifically for the sociology community worldwide</p>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card"><span class="feature-icon">📚</span><h3>Research Library</h3><p>Access thousands of sociology papers, case studies, and research documents shared by scholars worldwide.</p></div>
-    <div class="feature-card"><span class="feature-icon">💬</span><h3>Community Forums</h3><p>Engage in deep academic discussions, ask questions, and get answers from verified sociologists and professors.</p></div>
-    <div class="feature-card"><span class="feature-icon">🎓</span><h3>Live Lectures</h3><p>Teachers can host live sessions and upload recorded lectures for students to access anytime, anywhere.</p></div>
-    <div class="feature-card"><span class="feature-icon">📝</span><h3>Notes Sharing</h3><p>Students can share notes, assignments, and study materials with peers across the globe instantly.</p></div>
-    <div class="feature-card"><span class="feature-icon">🔬</span><h3>Research Groups</h3><p>Form collaborative research groups, work on joint projects, and publish findings to the community.</p></div>
-    <div class="feature-card"><span class="feature-icon">🌐</span><h3>Global Network</h3><p>Connect with sociology professionals from 120+ countries and build meaningful academic relationships.</p></div>
-  </div>
-</section>
-
-<section class="for-who" id="who">
-  <div class="section-header">
-    <div class="section-tag">✦ Built For You</div>
-    <h2>Who Uses SOCIOLEN?</h2>
-    <p>Three communities, one powerful platform</p>
-  </div>
-  <div class="who-grid">
-    <div class="who-card"><span class="who-emoji">🧑‍🎓</span><h3>Students</h3><ul><li>Access free study materials</li><li>Ask teachers directly</li><li>Share notes & assignments</li><li>Join study groups</li><li>Get career guidance</li></ul></div>
-    <div class="who-card"><span class="who-emoji">👨‍🏫</span><h3>Teachers</h3><ul><li>Upload & share lectures</li><li>Guide students globally</li><li>Create course material</li><li>Host live classes</li><li>Build a following</li></ul></div>
-    <div class="who-card"><span class="who-emoji">🔭</span><h3>Sociologists</h3><ul><li>Publish research papers</li><li>Collaborate globally</li><li>Share case studies</li><li>Join expert panels</li><li>Grow your network</li></ul></div>
-  </div>
-</section>
-
-<section class="how" id="how">
-  <div class="section-header">
-    <div class="section-tag">✦ Simple Steps</div>
-    <h2>How It Works</h2>
-    <p>Get started in minutes, connect with the world</p>
-  </div>
-  <div class="steps">
-    <div class="step"><div class="step-num">1</div><h3>Create Account</h3><p>Sign up free as a student, teacher, or sociologist in under 2 minutes.</p></div>
-    <div class="step-arrow">→</div>
-    <div class="step"><div class="step-num">2</div><h3>Build Profile</h3><p>Set up your academic profile, add your expertise and interests.</p></div>
-    <div class="step-arrow">→</div>
-    <div class="step"><div class="step-num">3</div><h3>Connect & Share</h3><p>Join communities, share knowledge, and collaborate with the world.</p></div>
-    <div class="step-arrow">→</div>
-    <div class="step"><div class="step-num">4</div><h3>Grow Together</h3><p>Learn, teach, research — advance sociology as a global community.</p></div>
-  </div>
-</section>
-
-<section class="cta-section" id="cta">
-  <h2>Ready to Join the Movement?</h2>
-  <p>Be part of the world's first sociology community platform</p>
-  <div class="cta-buttons">
-    <a href="#" class="btn-white">🚀 Join SOCIOLEN Free</a>
-    <a href="#features" class="btn-outline-white">Learn More</a>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-logo">SOCIO<span>LEN</span></div>
-  <p>© 2026 SOCIOLEN. Connecting the Sociology World.</p>
-  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
-</footer>
-
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/SOCIOLEN/sw.js');
-    });
+  let conversationHistory = [];
+  let currentTopic = '';
+  let isLoading = false;
+
+  function setTopic(el, topic) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentTopic = topic;
   }
 
-  let deferredPrompt;
-  const banner = document.getElementById('install-banner');
-  const installBtn = document.getElementById('install-btn');
-  const dismissBtn = document.getElementById('dismiss-btn');
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    banner.classList.add('show');
-  });
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
 
-  installBtn.addEventListener('click', async () => {
-    banner.classList.remove('show');
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-  });
+  function askQuick(question) {
+    document.getElementById('userInput').value = question;
+    sendMessage();
+  }
 
-  dismissBtn.addEventListener('click', () => {
-    banner.classList.remove('show');
-  });
+  function addMessage(role, text) {
+    const messages = document.getElementById('messages');
+
+    // Remove welcome message if exists
+    const welcome = messages.querySelector('.welcome');
+    if (welcome) welcome.remove();
+
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+
+    const avatar = document.createElement('div');
+    avatar.className = `avatar ${role}`;
+    avatar.textContent = role === 'ai' ? 'AI' : '👤';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = formatText(text);
+
+    div.appendChild(avatar);
+    div.appendChild(bubble);
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  function formatText(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
+  }
+
+  function showTyping() {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg ai typing';
+    div.id = 'typing';
+    div.innerHTML = `
+      <div class="avatar ai">AI</div>
+      <div class="bubble">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typing');
+    if (t) t.remove();
+  }
+
+  function showError(msg) {
+    const area = document.getElementById('error-area');
+    area.innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
+    setTimeout(() => area.innerHTML = '', 5000);
+  }
+
+  async function sendMessage() {
+    if (isLoading) return;
+    const input = document.getElementById('userInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    isLoading = true;
+    document.getElementById('sendBtn').disabled = true;
+    input.value = '';
+    input.style.height = 'auto';
+
+    addMessage('user', text);
+
+    const systemPrompt = `You are SOCIOLEN AI — an expert sociology assistant for a global platform serving students, teachers, and sociologists worldwide.
+
+Your role:
+- Answer sociology questions clearly and accurately
+- Explain complex theories in simple, understandable language
+- Provide real-world examples and case studies
+- Help students with assignments and concepts
+- Support teachers with explanations and content
+- Assist sociologists with research insights
+
+${currentTopic ? `Current focus topic: ${currentTopic}` : ''}
+
+Format your responses well with bold key terms, clear paragraphs, and examples. Be warm, educational, and genuinely helpful. Keep responses focused but comprehensive.`;
+
+    conversationHistory.push({ role: 'user', content: text });
+    showTyping();
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: conversationHistory
+        })
+      });
+
+      const data = await response.json();
+      removeTyping();
+
+      if (data.content && data.content[0]) {
+        const reply = data.content[0].text;
+        conversationHistory.push({ role: 'assistant', content: reply });
+        addMessage('ai', reply);
+      } else {
+        showError('Could not get a response. Please try again.');
+      }
+
+    } catch (err) {
+      removeTyping();
+      showError('Connection error. Please check your internet and try again.');
+    }
+
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
 </script>
 
 </body>
