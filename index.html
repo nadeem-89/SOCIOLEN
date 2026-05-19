@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,317 +7,79 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --g1: #0d2b1a;
-    --g2: #1a4731;
-    --g3: #2d7a4f;
-    --g4: #3dba72;
-    --g5: #7ddba0;
-    --g6: #c8f0d8;
-    --g7: #eaf8f0;
-    --white: #ffffff;
-    --text: #0a1f12;
-    --muted: #5a7a65;
+    --g1: #0d2b1a; --g2: #1a4731; --g3: #2d7a4f;
+    --g4: #3dba72; --g5: #7ddba0; --g6: #c8f0d8;
+    --white: #ffffff; --text: #0a1f12; --muted: #5a7a65;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--g1);
-    color: var(--white);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* BG EFFECT */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(61,186,114,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(26,71,49,0.3) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-  }
-
-  /* HEADER */
-  header {
-    position: sticky; top: 0; z-index: 100;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1rem 2rem;
-    background: rgba(13,43,26,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(61,186,114,0.15);
-  }
-  .logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem; font-weight: 700;
-    color: var(--white); letter-spacing: -0.5px;
-  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--g1); color: var(--white); min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 20% 20%, rgba(61,186,114,0.12) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 80%, rgba(26,71,49,0.3) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  header { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: rgba(13,43,26,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(61,186,114,0.15); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
   .logo span { color: var(--g4); }
-  .logo small {
-    display: block; font-family: 'DM Sans', sans-serif;
-    font-size: 0.6rem; font-weight: 400;
-    color: var(--g5); letter-spacing: 3px;
-    text-transform: uppercase; margin-top: -4px;
-  }
-  .header-badge {
-    background: rgba(61,186,114,0.15);
-    border: 1px solid rgba(61,186,114,0.3);
-    color: var(--g5); padding: 0.4rem 1rem;
-    border-radius: 50px; font-size: 0.75rem;
-    font-weight: 500; letter-spacing: 1px;
-  }
-
-  /* MAIN LAYOUT */
-  .app {
-    position: relative; z-index: 1;
-    max-width: 900px; margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
-  }
-
-  /* HERO */
-  .hero {
-    text-align: center; padding: 3rem 0 2rem;
-  }
-  .hero h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 700; line-height: 1.1;
-    margin-bottom: 1rem;
-  }
+  .logo small { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.6rem; font-weight: 400; color: var(--g5); letter-spacing: 3px; text-transform: uppercase; margin-top: -4px; }
+  .header-badge { background: rgba(61,186,114,0.15); border: 1px solid rgba(61,186,114,0.3); color: var(--g5); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.75rem; font-weight: 500; letter-spacing: 1px; }
+  .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
+  .hero { text-align: center; padding: 3rem 0 2rem; }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700; line-height: 1.1; margin-bottom: 1rem; }
   .hero h1 em { color: var(--g4); font-style: italic; }
-  .hero p {
-    color: var(--g5); font-size: 1rem;
-    font-weight: 300; max-width: 500px;
-    margin: 0 auto 2rem; line-height: 1.7;
-  }
-
-  /* TOPIC CHIPS */
-  .topics {
-    display: flex; flex-wrap: wrap; gap: 0.6rem;
-    justify-content: center; margin-bottom: 2.5rem;
-  }
-  .chip {
-    background: rgba(61,186,114,0.1);
-    border: 1px solid rgba(61,186,114,0.25);
-    color: var(--g5); padding: 0.4rem 1rem;
-    border-radius: 50px; font-size: 0.8rem;
-    cursor: pointer; transition: all 0.2s;
-    font-weight: 400;
-  }
-  .chip:hover, .chip.active {
-    background: rgba(61,186,114,0.25);
-    border-color: var(--g4); color: var(--white);
-  }
-
-  /* CHAT AREA */
-  .chat-box {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(61,186,114,0.15);
-    border-radius: 20px; overflow: hidden;
-    margin-bottom: 1rem;
-  }
-
-  .messages {
-    min-height: 300px; max-height: 500px;
-    overflow-y: auto; padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 1.2rem;
-    scroll-behavior: smooth;
-  }
+  .hero p { color: var(--g5); font-size: 1rem; font-weight: 300; max-width: 500px; margin: 0 auto 2rem; line-height: 1.7; }
+  .topics { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2.5rem; }
+  .chip { background: rgba(61,186,114,0.1); border: 1px solid rgba(61,186,114,0.25); color: var(--g5); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; font-weight: 400; }
+  .chip:hover, .chip.active { background: rgba(61,186,114,0.25); border-color: var(--g4); color: var(--white); }
+  .chat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(61,186,114,0.15); border-radius: 20px; overflow: hidden; margin-bottom: 1rem; }
+  .messages { min-height: 300px; max-height: 500px; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; scroll-behavior: smooth; }
   .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-track { background: transparent; }
   .messages::-webkit-scrollbar-thumb { background: rgba(61,186,114,0.3); border-radius: 2px; }
-
-  /* WELCOME MESSAGE */
-  .welcome {
-    text-align: center; padding: 2rem 1rem;
-    color: var(--g5);
-  }
+  .welcome { text-align: center; padding: 2rem 1rem; color: var(--g5); }
   .welcome-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
-  .welcome h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem; color: var(--white);
-    margin-bottom: 0.5rem;
-  }
+  .welcome h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--white); margin-bottom: 0.5rem; }
   .welcome p { font-size: 0.9rem; line-height: 1.6; }
-
-  /* MESSAGE BUBBLES */
-  .msg {
-    display: flex; gap: 0.8rem; align-items: flex-start;
-    animation: msgIn 0.3s ease;
-  }
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .msg { display: flex; gap: 0.8rem; align-items: flex-start; animation: msgIn 0.3s ease; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .msg.user { flex-direction: row-reverse; }
-
-  .avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; flex-shrink: 0; font-weight: 600;
-  }
-  .avatar.ai {
-    background: linear-gradient(135deg, var(--g3), var(--g4));
-    color: white; font-family: 'Cormorant Garamond', serif;
-    font-size: 0.9rem;
-  }
-  .avatar.user {
-    background: rgba(61,186,114,0.2);
-    border: 1px solid rgba(61,186,114,0.4);
-    color: var(--g4); font-size: 0.85rem;
-  }
-
-  .bubble {
-    max-width: 78%; padding: 0.9rem 1.2rem;
-    border-radius: 16px; font-size: 0.92rem;
-    line-height: 1.7; font-weight: 300;
-  }
-  .msg.ai .bubble {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(61,186,114,0.15);
-    border-top-left-radius: 4px; color: rgba(255,255,255,0.9);
-  }
-  .msg.user .bubble {
-    background: linear-gradient(135deg, var(--g3), var(--g2));
-    border: 1px solid rgba(61,186,114,0.3);
-    border-top-right-radius: 4px; color: white;
-  }
-
+  .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; font-weight: 600; }
+  .avatar.ai { background: linear-gradient(135deg, var(--g3), var(--g4)); color: white; font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; }
+  .avatar.user { background: rgba(61,186,114,0.2); border: 1px solid rgba(61,186,114,0.4); color: var(--g4); font-size: 0.85rem; }
+  .bubble { max-width: 78%; padding: 0.9rem 1.2rem; border-radius: 16px; font-size: 0.92rem; line-height: 1.7; font-weight: 300; }
+  .msg.ai .bubble { background: rgba(255,255,255,0.06); border: 1px solid rgba(61,186,114,0.15); border-top-left-radius: 4px; color: rgba(255,255,255,0.9); }
+  .msg.user .bubble { background: linear-gradient(135deg, var(--g3), var(--g2)); border: 1px solid rgba(61,186,114,0.3); border-top-right-radius: 4px; color: white; }
   .bubble strong { color: var(--g4); font-weight: 600; }
   .bubble em { color: var(--g5); font-style: italic; }
-
-  /* TYPING INDICATOR */
-  .typing .bubble {
-    display: flex; gap: 5px; align-items: center;
-    padding: 1rem 1.2rem;
-  }
-  .dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--g4); opacity: 0.4;
-    animation: bounce 1.2s infinite;
-  }
+  .typing .bubble { display: flex; gap: 5px; align-items: center; padding: 1rem 1.2rem; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--g4); opacity: 0.4; animation: bounce 1.2s infinite; }
   .dot:nth-child(2) { animation-delay: 0.2s; }
   .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); opacity: 0.4; }
-    50% { transform: translateY(-5px); opacity: 1; }
-  }
-
-  /* INPUT AREA */
-  .input-area {
-    padding: 1rem 1.2rem;
-    border-top: 1px solid rgba(61,186,114,0.1);
-    display: flex; gap: 0.8rem; align-items: flex-end;
-    background: rgba(255,255,255,0.02);
-  }
-  textarea {
-    flex: 1; background: transparent; border: none;
-    color: white; font-family: 'DM Sans', sans-serif;
-    font-size: 0.92rem; font-weight: 300;
-    resize: none; outline: none;
-    min-height: 24px; max-height: 120px;
-    line-height: 1.6;
-  }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-5px); opacity: 1; } }
+  .input-area { padding: 1rem 1.2rem; border-top: 1px solid rgba(61,186,114,0.1); display: flex; gap: 0.8rem; align-items: flex-end; background: rgba(255,255,255,0.02); }
+  textarea { flex: 1; background: transparent; border: none; color: white; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 300; resize: none; outline: none; min-height: 24px; max-height: 120px; line-height: 1.6; }
   textarea::placeholder { color: rgba(255,255,255,0.25); }
-
-  .send-btn {
-    width: 42px; height: 42px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--g3), var(--g4));
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; flex-shrink: 0;
-    color: white; font-size: 1.1rem;
-  }
+  .send-btn { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--g3), var(--g4)); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; color: white; font-size: 1.1rem; }
   .send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 20px rgba(61,186,114,0.4); }
   .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  /* QUICK QUESTIONS */
   .quick-section { margin-top: 1.5rem; }
-  .quick-label {
-    font-size: 0.75rem; color: var(--muted);
-    letter-spacing: 2px; text-transform: uppercase;
-    margin-bottom: 0.8rem; font-weight: 500;
-  }
-  .quick-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.7rem;
-  }
-  .quick-btn {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(61,186,114,0.15);
-    border-radius: 12px; padding: 0.8rem 1rem;
-    color: rgba(255,255,255,0.7); font-size: 0.82rem;
-    cursor: pointer; transition: all 0.2s;
-    text-align: left; font-family: 'DM Sans', sans-serif;
-    font-weight: 300; line-height: 1.4;
-  }
-  .quick-btn:hover {
-    background: rgba(61,186,114,0.1);
-    border-color: rgba(61,186,114,0.35);
-    color: white; transform: translateY(-2px);
-  }
+  .quick-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.8rem; font-weight: 500; }
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.7rem; }
+  .quick-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(61,186,114,0.15); border-radius: 12px; padding: 0.8rem 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.4; }
+  .quick-btn:hover { background: rgba(61,186,114,0.1); border-color: rgba(61,186,114,0.35); color: white; transform: translateY(-2px); }
   .quick-btn span { display: block; font-size: 1.1rem; margin-bottom: 0.3rem; }
-
-  /* STATS BAR */
-  .stats-bar {
-    display: flex; gap: 1rem; flex-wrap: wrap;
-    margin-top: 2rem; padding: 1.2rem 1.5rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(61,186,114,0.1);
-    border-radius: 16px;
-  }
-  .stat-item {
-    flex: 1; min-width: 100px; text-align: center;
-  }
-  .stat-item .num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem; font-weight: 700; color: var(--g4);
-    line-height: 1;
-  }
-  .stat-item .lbl {
-    font-size: 0.72rem; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-top: 0.2rem;
-  }
-
-  /* ERROR */
-  .error-msg {
-    background: rgba(220,50,50,0.1);
-    border: 1px solid rgba(220,50,50,0.3);
-    border-radius: 12px; padding: 0.8rem 1rem;
-    color: #ff9999; font-size: 0.85rem;
-    margin: 0.5rem 1.2rem;
-  }
-
-  @media (max-width: 600px) {
-    .app { padding: 1rem 1rem 5rem; }
-    header { padding: 0.8rem 1rem; }
-    .quick-grid { grid-template-columns: 1fr 1fr; }
-    .hero h1 { font-size: 2rem; }
-  }
+  .stats-bar { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; padding: 1.2rem 1.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(61,186,114,0.1); border-radius: 16px; }
+  .stat-item { flex: 1; min-width: 100px; text-align: center; }
+  .stat-item .num { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--g4); line-height: 1; }
+  .stat-item .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.2rem; }
+  .error-msg { background: rgba(220,50,50,0.1); border: 1px solid rgba(220,50,50,0.3); border-radius: 12px; padding: 0.8rem 1rem; color: #ff9999; font-size: 0.85rem; margin: 0.5rem 1.2rem; }
+  @media (max-width: 600px) { .app { padding: 1rem 1rem 5rem; } header { padding: 0.8rem 1rem; } .quick-grid { grid-template-columns: 1fr 1fr; } .hero h1 { font-size: 2rem; } }
 </style>
 </head>
 <body>
-
 <header>
-  <div class="logo">
-    SOCIO<span>LEN</span>
-    <small>Global Sociology Platform</small>
-  </div>
+  <div class="logo">SOCIO<span>LEN</span><small>Global Sociology Platform</small></div>
   <div class="header-badge">🤖 AI Powered</div>
 </header>
-
 <div class="app">
-
-  <!-- HERO -->
   <div class="hero">
     <h1>Ask Anything About<br><em>Sociology</em></h1>
     <p>Get instant AI-powered answers, analysis, and insights on any sociology topic — for students, teachers, and researchers worldwide.</p>
-
-    <!-- TOPIC CHIPS -->
     <div class="topics">
       <div class="chip active" onclick="setTopic(this, '')">All Topics</div>
       <div class="chip" onclick="setTopic(this, 'social stratification')">Social Stratification</div>
@@ -329,68 +91,38 @@
       <div class="chip" onclick="setTopic(this, 'globalization')">Globalization</div>
     </div>
   </div>
-
-  <!-- CHAT BOX -->
   <div class="chat-box">
     <div class="messages" id="messages">
       <div class="welcome">
         <span class="welcome-icon">🌿</span>
         <h3>Welcome to SOCIOLEN AI</h3>
-        <p>Ask me any sociology question — theories, concepts, research methods, social issues, or anything else. I'm here to help students, teachers, and sociologists worldwide.</p>
+        <p>Ask me any sociology question — theories, concepts, research methods, social issues, or anything else.</p>
       </div>
     </div>
-
     <div id="error-area"></div>
-
     <div class="input-area">
-      <textarea
-        id="userInput"
-        placeholder="Ask a sociology question... (e.g. What is social stratification?)"
-        rows="1"
-        onkeydown="handleKey(event)"
-        oninput="autoResize(this)"
-      ></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
-        ➤
-      </button>
+      <textarea id="userInput" placeholder="Ask a sociology question..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">➤</button>
     </div>
   </div>
-
-  <!-- QUICK QUESTIONS -->
   <div class="quick-section">
     <div class="quick-label">✦ Try These Questions</div>
     <div class="quick-grid">
-      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What is the difference between micro and macro sociology?">
-        <span>🔭</span>Micro vs Macro Sociology
-      </button>
-      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="Explain Emile Durkheim's theory of suicide and its sociological significance">
-        <span>📖</span>Durkheim's Suicide Theory
-      </button>
-      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="How does social media affect modern society sociologically?">
-        <span>📱</span>Social Media & Society
-      </button>
-      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What is gender inequality and how does sociology explain it?">
-        <span>⚖️</span>Gender Inequality
-      </button>
-      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="Explain Karl Marx's conflict theory in simple terms">
-        <span>⚡</span>Marx's Conflict Theory
-      </button>
-      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What are the main research methods used in sociology?">
-        <span>🔬</span>Research Methods
-      </button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What is the difference between micro and macro sociology?"><span>🔭</span>Micro vs Macro Sociology</button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="Explain Emile Durkheim's theory of suicide"><span>📖</span>Durkheim's Suicide Theory</button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="How does social media affect modern society?"><span>📱</span>Social Media & Society</button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What is gender inequality in sociology?"><span>⚖️</span>Gender Inequality</button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="Explain Karl Marx's conflict theory"><span>⚡</span>Marx's Conflict Theory</button>
+      <button class="quick-btn" onclick="askQuick(this.dataset.q)" data-q="What are sociology research methods?"><span>🔬</span>Research Methods</button>
     </div>
   </div>
-
-  <!-- STATS -->
   <div class="stats-bar">
     <div class="stat-item"><div class="num">50K+</div><div class="lbl">Global Users</div></div>
     <div class="stat-item"><div class="num">120+</div><div class="lbl">Countries</div></div>
     <div class="stat-item"><div class="num">500+</div><div class="lbl">Topics Covered</div></div>
     <div class="stat-item"><div class="num">24/7</div><div class="lbl">AI Available</div></div>
   </div>
-
 </div>
-
 <script>
   let conversationHistory = [];
   let currentTopic = '';
@@ -408,10 +140,7 @@
   }
 
   function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   }
 
   function askQuick(question) {
@@ -421,22 +150,16 @@
 
   function addMessage(role, text) {
     const messages = document.getElementById('messages');
-
-    // Remove welcome message if exists
     const welcome = messages.querySelector('.welcome');
     if (welcome) welcome.remove();
-
     const div = document.createElement('div');
     div.className = `msg ${role}`;
-
     const avatar = document.createElement('div');
     avatar.className = `avatar ${role}`;
     avatar.textContent = role === 'ai' ? 'AI' : '👤';
-
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
     bubble.innerHTML = formatText(text);
-
     div.appendChild(avatar);
     div.appendChild(bubble);
     messages.appendChild(div);
@@ -459,13 +182,7 @@
     const div = document.createElement('div');
     div.className = 'msg ai typing';
     div.id = 'typing';
-    div.innerHTML = `
-      <div class="avatar ai">AI</div>
-      <div class="bubble">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>`;
+    div.innerHTML = `<div class="avatar ai">AI</div><div class="bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
     messages.appendChild(div);
     messages.scrollTop = messages.scrollHeight;
   }
@@ -491,22 +208,9 @@
     document.getElementById('sendBtn').disabled = true;
     input.value = '';
     input.style.height = 'auto';
-
     addMessage('user', text);
 
-    const systemPrompt = `You are SOCIOLEN AI — an expert sociology assistant for a global platform serving students, teachers, and sociologists worldwide.
-
-Your role:
-- Answer sociology questions clearly and accurately
-- Explain complex theories in simple, understandable language
-- Provide real-world examples and case studies
-- Help students with assignments and concepts
-- Support teachers with explanations and content
-- Assist sociologists with research insights
-
-${currentTopic ? `Current focus topic: ${currentTopic}` : ''}
-
-Format your responses well with bold key terms, clear paragraphs, and examples. Be warm, educational, and genuinely helpful. Keep responses focused but comprehensive.`;
+    const systemPrompt = `You are SOCIOLEN AI — an expert sociology assistant for a global platform serving students, teachers, and sociologists worldwide. Answer sociology questions clearly and accurately. Explain complex theories in simple language. Provide real-world examples. Be warm, educational, and helpful. Format responses with bold key terms and clear paragraphs. ${currentTopic ? 'Current focus: ' + currentTopic : ''}`;
 
     conversationHistory.push({ role: 'user', content: text });
     showTyping();
@@ -531,9 +235,8 @@ Format your responses well with bold key terms, clear paragraphs, and examples. 
         conversationHistory.push({ role: 'assistant', content: reply });
         addMessage('ai', reply);
       } else {
-        showError('Could not get a response. Please try again.');
+        showError('Could not get response. Please try again.');
       }
-
     } catch (err) {
       removeTyping();
       showError('Connection error. Please check your internet and try again.');
@@ -544,6 +247,5 @@ Format your responses well with bold key terms, clear paragraphs, and examples. 
     input.focus();
   }
 </script>
-
 </body>
 </html>
